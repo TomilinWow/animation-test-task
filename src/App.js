@@ -1,24 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+import {Button, Layout, Row} from "antd";
+import {PoweroffOutlined} from '@ant-design/icons';
+import {useState} from "react";
+import animationLoading from "../src/lotties/INITIALIZE_1_HQ.json";
+import Lottie from "react-lottie";
+import {Widget} from "./components/Widget/Widget";
+import {CSSTransition} from "react-transition-group";
 
 function App() {
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
+
+  const options = {
+    loop: true,
+    autoplay: true,
+    animationData: animationLoading,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice"
+    }
+  };
+
+  const enterLoading = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false)
+      setIsOpen(true)
+    }, 3000);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Layout>
+        <Row justify="center" align="middle" className="main">
+          {
+            isLoading
+                ? <Lottie
+                    options={options}
+                    height={150}
+                    width={150}
+                />
+                : !isOpen && <Button
+                type="primary"
+                icon={<PoweroffOutlined/>}
+                onClick={() => enterLoading()}
+            >
+              Click me!
+            </Button>
+          }
+          <CSSTransition in={isOpen}
+                         classNames="widget"
+                         timeout={500}
+                         unmountOnExit>
+            <Widget/>
+          </CSSTransition>
+        </Row>
+      </Layout>
   );
 }
 
